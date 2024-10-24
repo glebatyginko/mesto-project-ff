@@ -1,10 +1,6 @@
 import { initialCards } from "../scripts/cards";
-import {
-  openPopup,
-  closePopup,
-  closeEsc,
-  handleOverlayClick,
-} from "../components/modal";
+import { openPopup, closePopup, handleOverlayClick } from "../components/modal";
+import { enableValidation, clearValidation } from "../components/validation";
 import { createCard, likeCard, deleteCard } from "../components/card";
 import "./index.css";
 
@@ -24,6 +20,15 @@ const buttonProfileAdd = document.querySelector(".profile__add-button");
 const editForm = document.forms["edit-profile"];
 const nameInput = editForm.elements.name;
 const jobInput = editForm.elements.description;
+
+const validationConfig = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_inactive",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__input-error_active",
+};
 
 function addCards(cards) {
   cards.forEach((card) => {
@@ -68,10 +73,12 @@ function submitNewCard(evt) {
 buttonProfileEdit.addEventListener("click", () => {
   nameInput.value = document.querySelector(".profile__title").textContent;
   jobInput.value = document.querySelector(".profile__description").textContent;
+  clearValidation(editForm, validationConfig);
   openPopup(popupTypeEdit);
 });
 
 buttonProfileAdd.addEventListener("click", () => {
+  clearValidation(newPlaceForm, validationConfig);
   openPopup(popupTypeNewCard);
 });
 
@@ -91,3 +98,5 @@ editForm.addEventListener("submit", handleFormSubmit);
 newPlaceForm.addEventListener("submit", submitNewCard);
 
 addCards(initialCards);
+
+enableValidation(validationConfig);

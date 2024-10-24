@@ -1,8 +1,11 @@
+export { openPopup, closePopup, handleOverlayClick };
+
 function openPopup(popup) {
   popup.classList.add("popup_is-opened");
   popup.classList.add("popup_is-animated");
   document.addEventListener("keydown", closeEsc);
 }
+
 
 function closePopup(popup) {
   popup.classList.remove("popup_is-opened");
@@ -22,4 +25,4 @@ function handleOverlayClick(evt) {
   }
 }
 
-export { openPopup, closePopup, closeEsc, handleOverlayClick };
+
