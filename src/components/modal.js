@@ -6,7 +6,6 @@ function openPopup(popup) {
   document.addEventListener("keydown", closeEsc);
 }
 
-
 function closePopup(popup) {
   popup.classList.remove("popup_is-opened");
   document.removeEventListener("keydown", closeEsc);
@@ -24,5 +23,3 @@ function handleOverlayClick(evt) {
     closePopup(evt.currentTarget);
   }
 }
-
-
