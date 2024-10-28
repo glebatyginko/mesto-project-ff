@@ -10,29 +10,38 @@ import {
 } from "../components/api";
 import "./index.css";
 
+const cardTemplate = document.querySelector("#card-template").content;
 const cardList = document.querySelector(".places__list");
+
+const profileForm = document.forms["edit-profile"];
 const newPlaceForm = document.forms["new-place"];
+const avatarForm = document.forms["edit-avatar"];
+
 const nameNewPlaceInput = newPlaceForm.elements["place-name"];
 const linkNewPlaceInput = newPlaceForm.elements.link;
+const nameInput = profileForm.elements.name;
+const jobInput = profileForm.elements.description;
+const avatarInput = avatarForm.elements["avatar-url"];
+
 const popups = document.querySelectorAll(".popup");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeImage = document.querySelector(".popup_type_image");
+const popupAvatar = document.querySelector(".popup_type_avatar");
+
 const popupImage = popupTypeImage.querySelector(".popup__image");
 const popupCaption = popupTypeImage.querySelector(".popup__caption");
-const buttonClose = document.querySelectorAll(".popup__close");
+
+const popupButtonClose = document.querySelectorAll(".popup__close");
 const buttonProfileEdit = document.querySelector(".profile__edit-button");
 const buttonProfileAdd = document.querySelector(".profile__add-button");
-const editForm = document.forms["edit-profile"];
-const nameInput = editForm.elements.name;
-const jobInput = editForm.elements.description;
-const popupAvatar = document.querySelector(".popup_type_avatar");
-const avatarForm = document.forms["edit-avatar"];
-const avatarInput = avatarForm.elements["avatar-url"];
+
 const profileEditIcon = document.querySelector(".profile__edit-icon");
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileAvatar = document.querySelector(".profile__image");
+
+let userId;
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -63,9 +72,9 @@ function openImagePopup(link, caption) {
   openPopup(popupTypeImage);
 }
 
-function handleFormSubmit(evt) {
+function handleProfileFormSubmit(evt) {
   evt.preventDefault();
-  const submitButton = editForm.querySelector(".popup__button");
+  const submitButton = profileForm.querySelector(".popup__button");
   const nameValue = nameInput.value;
   const jobValue = jobInput.value;
   renderLoading(true, submitButton);
@@ -95,7 +104,8 @@ function submitNewCard(evt) {
         cardData,
         deleteCard,
         likeCard,
-        openImagePopup
+        openImagePopup,
+        userId
       );
       cardList.prepend(newCard);
       closePopup(popupTypeNewCard);
@@ -139,7 +149,7 @@ function renderLoading(isLoading, button) {
 buttonProfileEdit.addEventListener("click", () => {
   nameInput.value = document.querySelector(".profile__title").textContent;
   jobInput.value = document.querySelector(".profile__description").textContent;
-  clearValidation(editForm, validationConfig);
+  clearValidation(profileForm, validationConfig);
   openPopup(popupTypeEdit);
 });
 
@@ -148,7 +158,7 @@ buttonProfileAdd.addEventListener("click", () => {
   openPopup(popupTypeNewCard);
 });
 
-editForm.addEventListener("submit", handleFormSubmit);
+profileForm.addEventListener("submit", handleProfileFormSubmit);
 
 newPlaceForm.addEventListener("submit", submitNewCard);
 
@@ -156,9 +166,10 @@ avatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
 profileEditIcon.addEventListener("click", () => {
   openPopup(popupAvatar);
+  clearValidation(avatarForm, validationConfig);
 });
 
-buttonClose.forEach((button) => {
+popupButtonClose.forEach((button) => {
   button.addEventListener("click", function () {
     const popup = button.closest(".popup");
     closePopup(popup);
@@ -173,7 +184,7 @@ enableValidation(validationConfig);
 
 Promise.all([getUserInfo(), getCards()])
   .then(([userInfo, cards]) => {
-    const userId = userInfo._id;
+    userId = userInfo._id;
     profileTitle.textContent = userInfo.name;
     profileDescription.textContent = userInfo.about;
     profileAvatar.style.backgroundImage = `url(${userInfo.avatar})`;
@@ -182,3 +193,5 @@ Promise.all([getUserInfo(), getCards()])
   .catch((err) => {
     console.log(err);
   });
+
+export { cardTemplate };

@@ -1,11 +1,4 @@
-export {
-  apiConfig,
-  getUserInfo,
-  getCards,
-  updateProfile,
-  postNewCard,
-  updateAvatar,
-};
+import { request } from "./utils/utils";
 
 const apiConfig = {
   baseUrl: "https://nomoreparties.co/v1/wff-cohort-24",
@@ -15,71 +8,56 @@ const apiConfig = {
   },
 };
 
+const endpoint = {
+  myUser: "/users/me",
+  cards: "/cards",
+  avatar: "/users/me/avatar",
+  likes: "/cards/likes",
+};
+
 function getUserInfo() {
-  return fetch(`${apiConfig.baseUrl}/users/me`, {
-    headers: apiConfig.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  return request(endpoint.myUser, "GET");
 }
 
 function getCards() {
-  return fetch(`${apiConfig.baseUrl}/cards`, {
-    headers: apiConfig.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  return request(endpoint.cards, "GET");
 }
 
 function updateProfile(name, about) {
-  return fetch(`${apiConfig.baseUrl}/users/me`, {
-    method: "PATCH",
-    headers: apiConfig.headers,
-    body: JSON.stringify({
-      name: name,
-      about: about,
-    }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  return request(endpoint.myUser, "PATCH", { name, about });
 }
 
 function postNewCard(name, link) {
-  return fetch(`${apiConfig.baseUrl}/cards`, {
-    method: "POST",
-    headers: apiConfig.headers,
-    body: JSON.stringify({
-      name: name,
-      link: link,
-    }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  return request(endpoint.cards, "POST", { name, link });
 }
 
 function updateAvatar(avatarUrl) {
-  return fetch(`${apiConfig.baseUrl}/users/me/avatar`, {
-    method: "PATCH",
-    headers: apiConfig.headers,
-    body: JSON.stringify({
-      avatar: avatarUrl,
-    }),
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
-  });
+  return request(endpoint.avatar, "PATCH", { avatar: avatarUrl });
 }
+
+function likeCardRequest(id) {
+  return request(`${endpoint.likes}/${id}`, "PUT");
+}
+
+function deleteLikeCardRequest(id) {
+  return request(`${endpoint.likes}/${id}`, "DELETE");
+}
+
+function toggleLikeCard(id, isLiked) {
+  return isLiked ? deleteLikeCardRequest(id) : likeCardRequest(id);
+}
+
+function deleteCardRequest(id) {
+  return request(`${endpoint.cards}/${id}`, "DELETE");
+}
+
+export {
+  apiConfig,
+  getUserInfo,
+  getCards,
+  updateProfile,
+  postNewCard,
+  updateAvatar,
+  toggleLikeCard,
+  deleteCardRequest,
+};

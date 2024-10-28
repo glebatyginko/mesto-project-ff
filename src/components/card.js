@@ -1,7 +1,5 @@
-import { apiConfig } from "../components/api";
-export { createCard, likeCard, deleteCard, cardTemplate };
-
-const cardTemplate = document.querySelector("#card-template").content;
+import { toggleLikeCard, deleteCardRequest } from "../components/api";
+import { cardTemplate } from "../pages";
 
 function createCard(addCard, deleteCard, likeCard, openImagePopup, userId) {
   const cardElement = cardTemplate
@@ -26,8 +24,12 @@ function createCard(addCard, deleteCard, likeCard, openImagePopup, userId) {
     });
   }
 
-  cardLikeButton.addEventListener("click", () => {
-    likeCard(cardLikeButton, cardLikeCount, addCard._id);
+  if (addCard.likes.some((like) => like._id === userId)) {
+    cardLikeButton.classList.add("card__like-button_is-active");
+  }
+
+  cardLikeButton.addEventListener("click", (evt) => {
+    likeCard(evt, cardLikeCount, addCard._id);
   });
 
   cardImage.addEventListener("click", () => {
@@ -37,21 +39,14 @@ function createCard(addCard, deleteCard, likeCard, openImagePopup, userId) {
   return cardElement;
 }
 
-function likeCard(button, likeCountElement, cardId) {
-  const isLiked = button.classList.contains("card__like-button_is-active");
-  fetch(`${apiConfig.baseUrl}/cards/likes/${cardId}`, {
-    method: isLiked ? "DELETE" : "PUT",
-    headers: apiConfig.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
+function likeCard(evt, likeCountElement, cardId) {
+  toggleLikeCard(
+    cardId,
+    evt.target.classList.contains("card__like-button_is-active")
+  )
     .then((cardData) => {
       likeCountElement.textContent = cardData.likes.length;
-      button.classList.toggle("card__like-button_is-active");
+      evt.target.classList.toggle("card__like-button_is-active");
     })
     .catch((err) => {
       console.log(err);
@@ -59,18 +54,13 @@ function likeCard(button, likeCountElement, cardId) {
 }
 
 function deleteCard(card, cardId) {
-  fetch(`${apiConfig.baseUrl}/cards/${cardId}`, {
-    method: "DELETE",
-    headers: apiConfig.headers,
-  })
-    .then((res) => {
-      if (res.ok) {
-        card.remove();
-        return res.json();
-      }
-      return Promise.reject(`Ошибка: ${res.status}`);
+  deleteCardRequest(cardId)
+    .then(() => {
+      card.remove();
     })
     .catch((err) => {
       console.log(err);
     });
 }
+
+export { createCard, likeCard, deleteCard, cardTemplate };

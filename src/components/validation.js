@@ -1,5 +1,3 @@
-export { enableValidation, clearValidation };
-
 function showInputError(
   formElement,
   inputElement,
@@ -69,10 +67,14 @@ function hasInvalidInput(inputList) {
   });
 }
 
+function disableButton(buttonElement, validationConfig) {
+  buttonElement.disabled = true;
+  buttonElement.classList.add(validationConfig.inactiveButtonClass);
+}
+
 function toggleButtonState(inputList, buttonElement, validationConfig) {
   if (hasInvalidInput(inputList)) {
-    buttonElement.disabled = true;
-    buttonElement.classList.add(validationConfig.inactiveButtonClass);
+    disableButton(buttonElement, validationConfig);
   } else {
     buttonElement.disabled = false;
     buttonElement.classList.remove(validationConfig.inactiveButtonClass);
@@ -89,6 +91,7 @@ function clearValidation(formElement, validationConfig) {
   const buttonElement = formElement.querySelector(
     validationConfig.submitButtonSelector
   );
-  buttonElement.classList.add(validationConfig.inactiveButtonClass);
-  buttonElement.disabled = true;
+  disableButton(buttonElement, validationConfig);
 }
+
+export { enableValidation, clearValidation };
