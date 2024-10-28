@@ -981,6 +981,8 @@ template {
   bottom: 0;
   right: 0;
   z-index: 10;
+  visibility: hidden;
+  opacity: 0;
 }
 
 .popup_is-animated {
@@ -993,8 +995,8 @@ template {
 }
 .popup_is-opened {
   display: flex;
-  visibility: visible;
   opacity: 1;
+  visibility: visible;
   pointer-events: all;
   transition: visibility 0s, opacity 0.6s;
 }
