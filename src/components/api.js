@@ -1,19 +1,5 @@
 import { request } from "./utils/utils";
-
-const apiConfig = {
-  baseUrl: "https://nomoreparties.co/v1/wff-cohort-24",
-  headers: {
-    authorization: "4fd1c26f-4164-41c7-8432-aa02590be211",
-    "Content-Type": "application/json",
-  },
-};
-
-const endpoint = {
-  myUser: "/users/me",
-  cards: "/cards",
-  avatar: "/users/me/avatar",
-  likes: "/cards/likes",
-};
+import { endpoint } from "./utils/constants";
 
 function getUserInfo() {
   return request(endpoint.myUser, "GET");
@@ -52,7 +38,6 @@ function deleteCardRequest(id) {
 }
 
 export {
-  apiConfig,
   getUserInfo,
   getCards,
   updateProfile,

@@ -1,4 +1,4 @@
-import { apiConfig } from "../api";
+import { apiConfig } from "../utils/constants";
 
 function checkResponse(res) {
   if (res.ok) {

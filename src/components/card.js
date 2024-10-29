@@ -1,5 +1,5 @@
 import { toggleLikeCard, deleteCardRequest } from "../components/api";
-import { cardTemplate } from "../pages";
+import { cardTemplate } from "../components/utils/constants";
 
 function createCard(addCard, deleteCard, likeCard, openImagePopup, userId) {
   const cardElement = cardTemplate
@@ -63,4 +63,4 @@ function deleteCard(card, cardId) {
     });
 }
 
-export { createCard, likeCard, deleteCard, cardTemplate };
+export { createCard, likeCard, deleteCard };
